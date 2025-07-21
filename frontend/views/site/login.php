@@ -36,6 +36,13 @@ $this->params['breadcrumbs'][] = $this->title;
                 </div>
 
             <?php ActiveForm::end(); ?>
+
+            <div style="color:#666;margin:1em 0">
+                <i>Or login with</i>
+            </div>
+            <div>
+                <?= Html::a('Google', ['site/auth', 'authclient' => 'google'], ['class' => 'btn btn-danger']) ?>
+            </div>
         </div>
     </div>
 </div>

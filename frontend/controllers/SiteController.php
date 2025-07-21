@@ -65,6 +65,10 @@ class SiteController extends Controller
                 'class' => \yii\captcha\CaptchaAction::class,
                 'fixedVerifyCode' => YII_ENV_TEST ? 'testme' : null,
             ],
+            'auth' => [
+                'class' => 'yii\authclient\AuthAction',
+                'successCallback' => [$this, 'onAuthSuccess'],
+            ],
         ];
     }
 
@@ -255,5 +259,25 @@ class SiteController extends Controller
         return $this->render('resendVerificationEmail', [
             'model' => $model
         ]);
+    }
+
+    public function onAuthSuccess($client)
+    {
+        $attributes = $client->getUserAttributes();
+
+        /** @var \common\models\User $user */
+        $user = \common\models\User::find()->where(['email' => $attributes['email']])->one();
+
+        if (empty($user)) {
+            $user = new \common\models\User();
+            $user->username = $attributes['email'];
+            $user->email = $attributes['email'];
+            $user->setPassword(Yii::$app->security->generateRandomString());
+            $user->generateAuthKey();
+            $user->generateEmailVerificationToken();
+            $user->save();
+        }
+
+        Yii::$app->user->login($user);
     }
 }
