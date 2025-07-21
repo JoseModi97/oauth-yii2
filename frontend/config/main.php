@@ -36,7 +36,10 @@ return [
         'errorHandler' => [
             'errorAction' => 'site/error',
         ],
-        'firebase' => require __DIR__ . '/firebase.php',
+        'firebase' => [
+            'class' => 'kreait\yii2\firebase\Firebase',
+            'credentials' => require __DIR__ . '/firebase.php',
+        ],
         'authClientCollection' => [
             'class' => 'yii\authclient\Collection',
             'clients' => [
